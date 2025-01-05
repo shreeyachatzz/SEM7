@@ -1,0 +1,57 @@
+Ways to do RE-> DFA:
+---------------------
+1) Using Thompson to convert to NFA then to DFA
+2) Syntax Tree method or Direct Method
+
+RE->DFA: Steps : Using stepwise conversion
+-------------------------------------------
+1) RE -> E-NFA : Thompson's Construction
+2) E-NFA -> NFA: Removing Epsilon transitions
+3) NFA -> DFA: Subset Construction using Epsilon closure (by creating epsilon closures for states and transitions)
+4) DFA-> Min DFA: Partitioning method, State Minimization using Final and Non Final States
+
+
+Steps for Thompson's construction:
+------------------------------------
+1) Create NFA's for all its component parts
+2) join them together using E-transitions wherever required
+3) new first to new last and old last to old first : for kleen closures
+
+States with no outcome: Dead State/Trap State/Rejected State
+
+SYMBOLS:
+---------
+1) Zero or More : Kleene Closure : Star Symbol: '*'
+2) Zero or One	: '?' eg: a? = {"","a"}
+3) Groupinig	: '()'
+4) Dot Symbol	: Matching any single character : '.' (dot)
+5) Caret Symbol : Start of String : '^'
+6) Dollar Symbol : End of String  " '$'
+
+-----------------------------------------------------------------------------------------
+SLR PARSER
+-----------------------------------------------------------------------------------------
+
+Steps:
+-----------------------------------------------------------------------------------------
+1. Augment the grammar: Create a new start symbol and corresponding rule.
+2. Calculate the closure: Starting from the augmented start symbol, calculate the closure of the state.
+3. Generate states using GOTO: Use the GOTO function to generate new states from existing ones.
+4. Compute the FIRST and FOLLOW sets: Calculate the sets for each non-terminal.
+5. Construct the SLR(1) parsing table: Use the FIRST and FOLLOW sets to determine actions in the parsing table (shift, reduce, accept).
+6. Parse input: The generated parsing table can be used to parse an input string by following the shift/reduce actions.
+
+
+WHY are SLR parsers attacktive?
+-----------------------------------------------------------------------------------------
+- LR parsing is most general non-backtracking shift-reduce parsing.
+- An LR-parser can detect a syntactic error as soon as it is possible to do so
+
+ACTIONS IN SLR PARSER:
+-----------------------------------------------------------------------------------------
+- shift s  -- shifts the next input symbol and the state s onto the stack
+- reduce
+	- pop 2*|B|items from the stack; let us assume that B = Y1Y2...Yr
+ 	- then push A and s  where  s=goto[sm-r,A]
+- Accept – Parsing successfully completed
+- Error  -- Parser detected an error (an empty entry in the action table)
