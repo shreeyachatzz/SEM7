@@ -1,0 +1,262 @@
+//HALF-ADDER
+module halfadder (
+    input a, b,
+    output sum, carry
+);
+
+assign sum = a ^ b;
+assign carry = a & b; 
+endmodule
+
+module halfadder_tb;
+reg a, b; 
+wire sum;
+wire carry;
+
+halfadder obj(.a(a), .b(b), .sum(sum), .carry(carry));
+
+initial begin
+    $display(" A | B | Sum | Carry ");
+    $display("---|---|-----|-------");
+    $monitor(" %b | %b |  %b  |   %b   ", a, b, sum, carry);
+    a = 0; b = 0; #1;
+    b = 1; #1; 
+    a = 1; #1; 
+    b = 0; #1; 
+    $finish;
+end
+endmodule
+---------------------------------------------------------------------------------------------
+//FULL ADDER
+Question: To design and verify a full adder using S = x’y’z+x’yz’+xy’z’+xyz C=xy+xz+yz
+Code:
+module fulladder (
+    input a, b, c,
+    output sum, carry
+);
+assign sum = a ^ b ^ c;
+assign carry = (a & b) | (b & c) | (a & c);
+endmodule
+
+module fulladder_tb;
+reg a, b, c;
+wire sum, carry;
+fulladder add1(a, b, c, sum, carry);
+
+initial begin
+    $display(" A | B | C | Sum | Carry ");
+    $display("---|---|---|-----|-------");
+    $monitor(" %b | %b | %b |  %b  |   %b   ", a, b, c, sum, carry);
+    a = 0; b = 0; c = 0; #5;
+    a = 0; b = 0; c = 1; #5;
+    a = 0; b = 1; c = 0; #5;
+    a = 0; b = 1; c = 1; #5;
+    a = 1; b = 0; c = 0; #5;
+    a = 1; b = 0; c = 1; #5;
+    a = 1; b = 1; c = 0; #5;
+    a = 1; b = 1; c = 1; #5;
+end
+endmodule
+------------------------------------------------------------------------------
+//Half-Subtractor
+module half_sub (
+    input a, b,
+    output D, B
+);
+
+assign D = a ^ b;
+assign B = ~a & b;
+endmodule
+
+module half_sub_tb;
+reg a, b;
+wire D, B;
+half_sub hs(a, b, D, B);
+
+initial begin
+    $display("  A | B | Difference | Borrow ");
+    $display("---|---|------------|--------");
+    $monitor(" %b | %b |      %b     |   %b   ", a, b, D, B);
+    a = 0; b = 0; #1;
+    a = 0; b = 1; #1;
+    a = 1; b = 0; #1;
+    a = 1; b = 1; #1;
+end
+endmodule
+------------------------------------------------------------------------
+//BCDtoXS3
+module BCD2Ex3 (
+    input A, B, C, D,
+    output W, X, Y, Z
+);
+
+assign W = A | (B & C) | (B & D);
+assign X = (~B & C) | (~B & D) | (B & ~C & ~D);
+assign Y = ~(C ^ D);
+assign Z = ~D;
+endmodule
+
+module test_BCD2Ex3;
+reg A, B, C, D;
+wire W, X, Y, Z;
+
+BCD2Ex3 converter(A,B,C,D,W,X,Y,Z);
+
+initial begin
+    $display("   BCD   |  EXC 3  ");
+    $display("---------|------------");
+    $display(" A B C D | W X Y Z ");
+    $display("---------|------------");
+    $monitor(" %b %b %b %b | %b %b %b %b", A,B,C,D,W,X,Y,Z);
+    A = 0;  B = 0; C = 0; D = 0;
+	#5  A = 0;  B = 0;  C = 0;  D = 0;
+	#5  A = 0;  B = 0;  C = 0;  D = 1;
+	#5  A = 0;  B = 0;  C = 1;  D = 0;
+	#5  A = 0;  B = 0;  C = 1;  D = 1;
+	#5  A = 0;  B = 1;  C = 0;  D = 0;
+	#5  A = 0;  B = 1;  C = 0;  D = 1;
+	#5  A = 0;  B = 1;  C = 1;  D = 0;
+	#5  A = 0;  B = 1;  C = 1;  D = 1;
+	#5  A = 1;  B = 0;  C = 0;  D = 0;
+	#5  A = 1;  B = 0;  C = 0;  D = 1;
+end
+endmodule
+
+----------------------------------------------------------------------------
+//MUX4:1
+module mux (
+    input s1,s2,a,b,c,d,
+    output y
+);
+
+assign y = (~s1 & ~s2 & a) | (~s1 & s2 & b) | (s1 & ~s2 & c) | (s1 & s2 & d);
+endmodule
+
+module test_mux;
+reg a,b,c,d,s1,s2;
+wire y;
+mux obj(s1,s2,a,b,c,d,y);
+
+initial begin
+    $display(" S1 S2 | A B C D | Y ");
+    $display("-------|---------|---");
+    $monitor(" %b   %b | %b %b %b %b | %b", s1,s2,a,b,c,d,y);
+    a=0; b=0; c=0; d=0; s1=0; s2=0;
+		#5  a=0; b=0; c=0; d=0; s1=0; s2=0;
+		#5  a=0; b=0; c=0; d=1; s1=0; s2=1;
+		#5  a=0; b=0; c=1; d=0; s1=1; s2=0;
+		#5  a=0; b=0; c=1; d=1; s1=1; s2=1;
+		#5  a=0; b=1; c=0; d=0; s1=0; s2=0;
+		#5  a=0; b=1; c=0; d=1; s1=0; s2=1;
+		#5  a=0; b=1; c=1; d=0; s1=1; s2=0;
+		#5  a=0; b=1; c=1; d=1; s1=1; s2=0;
+		#5  a=1; b=0; c=0; d=0; s1=0; s2=1;
+		#5  a=1; b=0; c=0; d=1; s1=0; s2=0;
+
+end
+endmodule
+----------------------------------------------------------
+//DEMUX 1:4
+module demux (
+    input s1, s0, e, i,
+    output a, b, c, d
+);
+assign a = i & e & ~s1 & ~s0;
+assign b = i & e & ~s1 & s0;
+assign c = i & e & s1 & ~s0;
+assign d = i & e & s1 & s0;
+endmodule
+
+module test_demux;
+reg s1, s0, e, i;
+wire a, b, c, d;
+
+
+demux obj (.s1(s1), .s0(s0), .e(e), .i(i), .a(a), .b(b), .c(c), .d(d));
+
+initial begin
+    $display(" E S1 S0 | A B C D ");
+    $display("---------|---------");
+    $monitor(" %b  %b  %b | %b %b %b %b", e, s1, s0, a, b, c, d);
+
+    // Test cases
+    i = 1; e = 0; s1 = 0; s0 = 0; #10;
+    i = 1; e = 1; s1 = 0; s0 = 0; #10;
+    i = 1; e = 1; s1 = 0; s0 = 1; #10;
+    i = 1; e = 1; s1 = 1; s0 = 0; #10;
+    i = 1; e = 1; s1 = 1; s0 = 1; #10;
+
+    $finish;
+end
+
+endmodule
+
+//DECODER 2:4
+module decoder (
+    input a, b, E,
+    output c, d, e, f
+);
+
+assign c = E & a & b;
+assign d = E & a & ~b;
+assign e = E & ~a & b;
+assign f = E & ~a & ~b;
+
+endmodule
+
+module test_decoder;
+reg a, b, E;
+wire c, d, e, f;
+
+// Instantiate the decoder module
+decoder obj (.a(a), .b(b), .E(E), .c(c), .d(d), .e(e), .f(f));
+
+initial begin 
+   $display(" E A B | C D E F ");
+   $display("-------|---------");
+   $monitor(" %b %b %b | %b %b %b %b", E, a, b, c, d, e, f);
+
+   // Test cases
+   E = 0; a = 0; b = 0; #5;
+   E = 1; a = 0; b = 0; #5;
+   E = 1; a = 0; b = 1; #5;
+   E = 1; a = 1; b = 0; #5;
+   E = 1; a = 1; b = 1; #5;
+
+   $finish; // End simulation
+end
+
+endmodule
+-----------------------------------------------------
+//ENCODER 4:2
+module encoder (
+    input a, b, c, d,
+    output p, q
+);
+
+assign p = a | b;
+assign q = a | c;
+
+endmodule
+
+module test_encoder;
+reg a, b, c, d;
+wire p, q;
+
+encoder obj (.a(a), .b(b), .c(c), .d(d), .p(p), .q(q));
+
+initial begin
+   $display(" A B C D | P Q ");
+   $display("---------|------");
+   $monitor(" %b %b %b %b | %b %b", a, b, c, d, p, q);
+
+   // Test cases
+   a = 0; b = 0; c = 0; d = 1; #5;
+   a = 0; b = 0; c = 1; d = 0; #5;
+   a = 0; b = 1; c = 0; d = 0; #5;
+   a = 1; b = 0; c = 0; d = 0; #5;
+
+   $finish; // End the simulation
+end
+
+endmodule
