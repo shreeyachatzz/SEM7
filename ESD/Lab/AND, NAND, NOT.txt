@@ -1,0 +1,78 @@
+-----------------------------------------------------------------------------------------
+// AND Gate
+
+module and_gate (
+    input a,
+    input b,
+    output y
+);
+assign y = a & b;
+endmodule
+
+module testbench_and;
+reg a, b;
+wire y;
+
+and_gate uut (.a(a), .b(b), .y(y));
+
+initial begin
+    $monitor("a=%b | b=%b | y=%b", a, b, y);
+    a = 0; b = 0; #10;
+    a = 0; b = 1; #10;
+    a = 1; b = 0; #10;
+    a = 1; b = 1; #10;
+    $finish;
+end
+endmodule
+
+-----------------------------------------------------------------------------------------
+// NAND Gate
+
+module nand_gate (
+    input a,
+    input b,
+    output y
+);
+assign y = ~(a & b); // NAND operation
+endmodule
+
+module testbench_nand;
+reg a, b;
+wire y;
+
+nand_gate uut (.a(a), .b(b), .y(y));
+
+initial begin
+    $monitor("a=%b | b=%b | y=%b", a, b, y);
+    a = 0; b = 0; #10;
+    a = 0; b = 1; #10;
+    a = 1; b = 0; #10;
+    a = 1; b = 1; #10;
+    $finish;
+end
+endmodule
+
+-----------------------------------------------------------------------------------------
+// NOT Gate
+
+module not_gate (
+    input a,
+    output y
+);
+assign y = ~a; 
+endmodule
+
+module testbench_not;
+reg a;
+wire y;
+
+not_gate uut (.a(a), .y(y));
+
+initial begin
+    $monitor("a=%b | y=%b", a, y);
+    a = 0; #10;
+    a = 1; #10;
+    $finish;
+end
+endmodule
+

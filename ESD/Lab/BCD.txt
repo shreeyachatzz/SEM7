@@ -1,0 +1,35 @@
+// BCD to Excess-3 Code Converter Implementation
+
+
+module BCD2Ex3 (
+    input A, B, C, D,
+    output W, X, Y, Z
+);
+
+assign W = A | (B & C) | (B & D);
+assign X = (~B & C) | (~B & D) | (B & ~C & ~D);
+assign Y = ~(C ^ D);
+assign Z = ~D;
+endmodule
+
+module test_BCD2Ex3;
+reg A, B, C, D;
+wire W, X, Y, Z;
+
+BCD2Ex3 converter(A,B,C,D,W,X,Y,Z);
+
+initial begin
+    $monitor("A=%b B=%b C=%b D=%b | W=%b X=%b Y=%b Z=%b", A,B,C,D,W,X,Y,Z);
+    A = 0;  B = 0; C = 0; D = 0;
+	#5  A = 0;  B = 0;  C = 0;  D = 0;
+	#5  A = 0;  B = 0;  C = 0;  D = 1;
+	#5  A = 0;  B = 0;  C = 1;  D = 0;
+	#5  A = 0;  B = 0;  C = 1;  D = 1;
+	#5  A = 0;  B = 1;  C = 0;  D = 0;
+	#5  A = 0;  B = 1;  C = 0;  D = 1;
+	#5  A = 0;  B = 1;  C = 1;  D = 0;
+	#5  A = 0;  B = 1;  C = 1;  D = 1;
+	#5  A = 1;  B = 0;  C = 0;  D = 0;
+	#5  A = 1;  B = 0;  C = 0;  D = 1;
+end
+endmodule

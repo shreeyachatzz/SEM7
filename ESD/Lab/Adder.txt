@@ -1,0 +1,63 @@
+-----------------------------------------------------------------------------------------
+// Full Adder
+
+
+module fulladder (
+    input a, b, c,
+    output sum, carry
+);
+assign sum = a ^ b ^ c;
+assign carry = (a & b) | (b & c) | (a & c);
+endmodule
+
+module fulladder_tb;
+reg a, b, c;
+wire sum, carry;
+fulladder add1(a, b, c, sum, carry);
+
+initial begin
+    $monitor("A=%b B=%b C=%b | Sum=%b Carry=%b", a, b, c, sum, carry);
+    a = 0; b = 0; c = 0; #5;
+    a = 0; b = 0; c = 1; #5;
+    a = 0; b = 1; c = 0; #5;
+    a = 0; b = 1; c = 1; #5;
+    a = 1; b = 0; c = 0; #5;
+    a = 1; b = 0; c = 1; #5;
+    a = 1; b = 1; c = 0; #5;
+    a = 1; b = 1; c = 1; #5;
+end
+endmodule
+
+-----------------------------------------------------------------------------------------
+//Half Adder
+
+
+module halfadder (
+    input a, b,
+    output sum, carry
+);
+
+assign sum = a ^ b;
+assign carry = a & b;
+xor x1(sum, a, b);
+and a1(carry, a, b);
+endmodule
+
+module halfadder_tb;
+reg a, b; 
+wire sum;
+wire carry;
+
+halfadder add1 (.a(a), .b(b), .sum(sum), .carry(carry));
+
+initial begin
+    $monitor("Time = %d: A = %b | B = %b | Sum = %b | Carry = %b", $time, a, b, sum, carry);
+    a = 0; b = 0; #1;
+    b = 1; #1; 
+    a = 1; #1; 
+    b = 0; #1; 
+    $finish;
+end
+endmodule
+
+

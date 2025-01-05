@@ -1,0 +1,57 @@
+-----------------------------------------------------------------------------------------
+// Encoder Implementation (4-to-2)
+
+
+module encoder (
+    input a,b,c,d,
+    output p,q
+);
+
+assign p = a | b;
+assign q = a | c;
+endmodule
+
+module test_encoder;
+reg a,b,c,d;
+wire p,q;
+encoder obj(a,b,c,d,p,q);
+
+initial begin 
+   $monitor("A=%b B=%b C=%b D=%b | P=%b Q=%b",a,b,c,d,p,q);
+   a=0;b=0;c=0;d=1; #5;
+   a=0;b=0;c=1;d=0; #5;
+   a=0;b=1;c=0;d=0; #5;
+   a=1;b=0;c=0;d=0; 
+end 
+endmodule
+
+-----------------------------------------------------------------------------------------
+// Decoder Implementation (2-to-4)
+
+
+module decoder (
+    input a,b,E,
+    output c,d,e,f
+);
+
+assign c = E & a & b;
+assign d = E & a & ~b;
+assign e = E & ~a & b;
+assign f = E & ~a & ~b;
+endmodule
+
+module test_decoder;
+reg a,b,E;
+wire c,d,e,f;
+
+decoder obj(a,b,E,c,d,e,f);
+
+initial begin 
+   $monitor("E=%b A=%b B=%b | C=%b D=%b E=%b F=%b", E,a,b,c,d,e,f);
+   E=0;a=0;b=0;#5;
+   E=1;a=0;b=0;#5;
+   E=1;a=0;b=1;#5;
+   E=1;a=1;b=0;#5;
+   E=1;a=1;b=1;
+end 
+endmodule
